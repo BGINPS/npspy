@@ -1,0 +1,11 @@
+matplotlib>=3.9.2
+h5py>=3.12.1
+scipy>=1.14.1
+numpy>=1.26.4
+pandas>=2.2.3
+seaborn>=0.13.2
+scikit-learn>=1.5.2
+PyWavelets>=1.7.0
+tslearn>=0.6.3
+POT>=0.9.5
+tqdm>=4.66.5
