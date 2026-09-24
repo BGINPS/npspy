@@ -18,8 +18,9 @@ import re
 import glob
 import configparser
 from configparser import ConfigParser, ExtendedInterpolation
-
 from typing import Dict, Optional, Tuple, Union, Literal, List
+
+from . import plot as pl
 
 
 def read_pickle(
@@ -96,7 +97,8 @@ def save_pickle(
 
 def save_np_as_npy(
     a: np.ndarray,
-    npy_file_name: str
+    save_dir: str = './',
+    npy_file_name: str = 'a.npy',
 ) -> None:
     """save a numpy array as a npy file
 
@@ -105,7 +107,9 @@ def save_np_as_npy(
         npy_file_name (str): the npy file
     """
     assert npy_file_name[-4:] == '.npy'
-    with open(npy_file_name, "wb") as f:
+    pl.create_dir_if_not_exist(save_dir)
+    npy_file_path = os.path.join(save_dir, npy_file_name)
+    with open(npy_file_path, "wb") as f:
         np.save(f, arr=a)
 
 def load_npy_as_np(

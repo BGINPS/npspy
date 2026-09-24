@@ -128,7 +128,7 @@ def _find_platforms(
     filtered_segments = []
     for i in range(len(segments)-1):
         one_seg = x[segments[i]:segments[i+1]]
-        if np.all(one_seg>min_c) and np.all(one_seg<=max_c) and len(one_seg)>=min_len:
+        if np.all(one_seg>=min_c) and np.all(one_seg<=max_c) and len(one_seg)>=min_len:
             filtered_segments.append([segments[i],segments[i+1]])
     
     if len(filtered_segments) == 0:

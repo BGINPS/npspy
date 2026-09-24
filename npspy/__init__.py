@@ -21,6 +21,9 @@ from . import density as dn
 from . import machine_learning as ml
 from . import preprocessing as pp
 from . import denoise as de
+from . import ppi
+from . import npsc
+from . import procls as pc
 
 
 from . import version

@@ -239,6 +239,7 @@ def draw_window(
     read_obj = obj[read_id]
     if isinstance(read_obj['window'], (list, tuple)):
         window_start, window_end = read_obj['window']
+        window_end = window_end - 1
         # ax.axvline(window_start, color='red', ls='--')
         # ax.axvline(window_end, color='red', ls='--')
         xs = [window_start, window_end]

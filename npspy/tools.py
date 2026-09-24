@@ -123,11 +123,11 @@ def substrac_signal_of_an_obj(
 
 def set_att_for_an_obj(
     obj: dict,
-    atts: Literal['mean_of_I/I0', 'std_of_I/I0', 'median_of_I/I0', 'window_length', 'pd2rd', 'signal_length', 'pd2od', 'dna1_len', 'dna2_len', 'min_of_I/I0'] = ['mean_of_I/I0', 'std_of_I/I0', 'window_length'],
+    atts: Literal['mean_of_I/I0', 'std_of_I/I0', 'median_of_I/I0', 'mean_of_I/I0_of_dna1', 'window_length', 'pd2rd', 'signal_length', 'pd2od', 'dna1_len', 'dna2_len', 'min_of_I/I0'] = ['mean_of_I/I0', 'std_of_I/I0', 'window_length'],
     in_place: bool = False,
     scale_by_openpore: bool = True,
 ) -> Union[dict, None]:
-    assert np.all(np.isin(atts, ['mean_of_I/I0', 'std_of_I/I0', 'median_of_I/I0', 'window_length', 'pd2rd', 'signal_length', 'pd2od', 'dna1_len', 'dna2_len', 'min_of_I/I0'])) == True
+    assert np.all(np.isin(atts, ['mean_of_I/I0', 'std_of_I/I0', 'median_of_I/I0', 'mean_of_I/I0_of_dna1', 'window_length', 'pd2rd', 'signal_length', 'pd2od', 'dna1_len', 'dna2_len', 'min_of_I/I0'])) == True
 
     if in_place:
         new_obj = obj
@@ -147,6 +147,13 @@ def set_att_for_an_obj(
 
         if 'mean_of_I/I0' in atts:
             read_obj['mean_of_I/I0'] = np.mean(x)
+        if 'mean_of_I/I0_of_dna1' in atts:
+            if 'window' in read_obj and read_obj['window'] != None:
+                s, e = read_obj['window'][0], read_obj['window'][1]
+                dna1_signal = (read_obj['signal'][0:s]).astype(np.float32) / read_obj['OpenPore']
+                read_obj['mean_of_I/I0_of_dna1'] = np.mean(dna1_signal)
+            else:
+                read_obj['mean_of_I/I0_of_dna1'] = None
         if 'std_of_I/I0' in atts:
             read_obj['std_of_I/I0'] = np.std(x)
         if 'median_of_I/I0' in atts:
@@ -190,9 +197,9 @@ def set_att_for_an_obj(
 
 def get_att_from_an_obj(
     obj: dict,
-    atts: Literal['mean_of_I/I0', 'std_of_I/I0', 'median_of_I/I0', 'window_length', 'pd2rd', 'signal_length', 'pd2od', 'dna1_len', 'dna2_len']
+    atts: Literal['mean_of_I/I0', 'std_of_I/I0', 'median_of_I/I0', 'mean_of_I/I0_of_dna1','window_length', 'pd2rd', 'signal_length', 'pd2od', 'dna1_len', 'dna2_len', 'platform_start', 'platform_median', 'platform_len', 'platform_std']
 ):
-    assert np.all(np.isin(atts, ['mean_of_I/I0', 'std_of_I/I0', 'median_of_I/I0', 'window_length', 'pd2rd', 'signal_length', 'pd2od', 'dna1_len', 'dna2_len'])) == True
+    #assert np.all(np.isin(atts, ['mean_of_I/I0', 'std_of_I/I0', 'median_of_I/I0', 'mean_of_I/I0_of_dna1', 'window_length', 'pd2rd', 'signal_length', 'pd2od', 'dna1_len', 'dna2_len', 'platform_start', 'platform_median', 'platform_len', 'platform_std'])) == True
     
     atts_df = []
     read_ids = []
@@ -210,6 +217,8 @@ def filter_out_reads_without_widows(
 
     Args:
         obj (_type_): the obj to be filtered
+    Returns:
+        obj (_type_): the filtered obj
     """
     read_ids_with_no_windows = [read_id for read_id, read_obj in obj.items() if read_obj['window']==None]
     obj = delete_reads_in_an_obj(obj=obj, reads_need_to_remove=read_ids_with_no_windows)
@@ -255,6 +264,19 @@ def select_reads_within_att_range(
             reads_need_to_be_removed.append(read_id)
     obj = delete_reads_in_an_obj(obj=obj, reads_need_to_remove=reads_need_to_be_removed)
     return obj
+
+def select_reads_with_att_state(
+    obj: dict,
+    att: str,
+    states: list[str],
+):
+    assert isinstance(states, list)
+    sub_obj = {}
+    for read_id, read_obj in obj.items():
+        if read_obj[att] in set(states):
+            sub_obj[read_id] = read_obj
+    return sub_obj
+
 
 
 def get_signals_for_reads_in_an_obj(

@@ -130,6 +130,7 @@ def get_consensus_signal_by_softdtw_barycenter_for_an_obj(
     att: str = 'signal',
     re_smooth: bool = True,
     smooth_att: str = 'smoothed_signal',
+    seed: int = 0,
 ) -> np.array:
     """Get consensus signal by softdtw barycenter for an object.
 
@@ -145,6 +146,7 @@ def get_consensus_signal_by_softdtw_barycenter_for_an_obj(
             if False, use `smooth_att` to find consensus.
             if True, smooth the signal and set `smooth_att` and use `smooth_att` to find consensus.
         smooth_att (str, optional): attribute to save the smoothed signal. Defaults to 'smoothed_signal'.
+        seed (int, optional): random seed for reproducibility. Defaults to 0.
 
     Returns:
         np.array: consensus signal, down_sample_to * 2, 2d array
@@ -154,7 +156,7 @@ def get_consensus_signal_by_softdtw_barycenter_for_an_obj(
 
     barycenters = []
     for i in range(n_time):
-        sub_obj = tl.extract_x_reads_randomly(obj, read_num=read_num_for_each_time, seed=i)
+        sub_obj = tl.extract_x_reads_randomly(obj, read_num=read_num_for_each_time, seed=i+seed)
         X = tl.get_signals_for_reads_in_an_obj(obj=sub_obj, down_sample_to=down_sample_to, 
                                                att=smooth_att, target='window', 
                                                normalize_by_openpore=True)

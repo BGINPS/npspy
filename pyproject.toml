@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "npspy"
+version = "1.0.0"
+description = "npspy is a general toolkit for processing protein electrical signals"
+authors = [
+    {name = "Hailin Pan", email = "panhailin@genomics.cn"},
+    {name = "Ji Wang", email = "wangji1@genomics.cn"}
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "matplotlib>=3.9.2",
+    "h5py>=3.12.1",
+    "scipy>=1.14.1",
+    "numpy>=1.26.4",
+    "pandas>=2.2.3",
+    "seaborn>=0.13.2",
+    "scikit-learn>=1.5.2",
+    "PyWavelets>=1.7.0",
+    "tslearn>=0.6.3",
+    "POT>=0.9.5",
+    "tqdm>=4.66.5",
+]
+

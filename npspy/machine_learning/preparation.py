@@ -42,11 +42,12 @@ def get_X_y_from_an_obj(
     y_code_dict: dict,
     label: str,
     att: str = 'lowpass_signal',
+    target: Literal['dna1', 'window', 'dna2', 'all'] = 'window',
     down_sample_to: int = 100,
 ) -> pd.DataFrame:
     if isinstance(obj, str):
         obj = io.read_pickle(obj)
-    X = tl.get_signals_for_reads_in_an_obj(obj, att=att, down_sample_to=down_sample_to)
+    X = tl.get_signals_for_reads_in_an_obj(obj, att=att, down_sample_to=down_sample_to, target=target)
     y = [y_code_dict[label]] * X.shape[0]
     X = X.astype(np.float32)
     y = np.array(y)
@@ -60,13 +61,14 @@ def get_X_y_from_objs(
     labels: List[str],
     y_code_dict: dict,
     att: str = 'lowpass_signal',
+    target: Literal['dna1', 'window', 'dna2', 'all'] = 'window',
     down_sample_to: int = 100,
 ) -> pd.DataFrame:
     df = []
     for obj, label in zip(objs, labels):
         if isinstance(obj, str):
             obj = io.read_pickle(obj)
-        df_ = get_X_y_from_an_obj(obj, y_code_dict, label=label, att=att, down_sample_to=down_sample_to)
+        df_ = get_X_y_from_an_obj(obj, y_code_dict, label=label, att=att, down_sample_to=down_sample_to, target=target)
         df.append(df_)
     df = pd.concat(df)
     return df
@@ -103,7 +105,7 @@ class Cus_Dataset(Dataset):
         if self.augment:
             one_X = window_warping(one_X)
 
-        one_x = torch.as_tensor(one_y, dtype=torch.float32)
+        # one_x = torch.as_tensor(one_y, dtype=torch.float32)
         one_y = torch.as_tensor(one_y, dtype=torch.long)
 
         return one_read_id, one_X, one_y
